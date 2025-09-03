@@ -1,5 +1,6 @@
 #include "stdbool.h"
 #include "standard_calc.h"
+#include <math.h>
 
 /**
  * @brief Bounds the provided angle between [-180, 180) degrees.
@@ -13,7 +14,9 @@
  * @return float: The bounded angle in degrees.
  */
 float bound_to_180(float angle) {
-    return 0;
+    float mod = fmodf(angle, 360.0f);
+	if (mod < 0) mod += 360.0f;
+	return mod < 180.0f ? mod : mod - 360.0f;
 }
 
 /**
@@ -29,5 +32,10 @@ float bound_to_180(float angle) {
  * @return bool: TRUE when `middle_angle` is not in the reflex angle of `first_angle` and `second_angle`, FALSE otherwise
  */
 bool is_angle_between(float first_angle, float middle_angle, float second_angle) {
-    return true;
+    first_angle = bound_to_180(first_angle);
+    middle_angle = bound_to_180(middle_angle);
+    second_angle = bound_to_180(second_angle);
+	bool is_degrees_between = (first_angle <= middle_angle && middle_angle <= second_angle) \
+							  || (second_angle <= middle_angle && middle_angle <= first_angle);
+	return fabsf(second_angle - first_angle) < 180.0f ? is_degrees_between : !is_degrees_between;
 }
